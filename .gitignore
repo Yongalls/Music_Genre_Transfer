@@ -1,0 +1,7 @@
+# gitignore files - for not update huge dataset (midi train)
+
+# sould not upload CP_C..else
+/dataset/*
+
+# but should upload our data (k_pop dataset)
+!/dataset/midi
