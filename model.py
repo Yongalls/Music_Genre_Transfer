@@ -213,7 +213,7 @@ class cyclegan(object):
         if self.model == 'partial':
             data_mixed = dataA + dataB
         if self.model == 'full':
-            data_mixed = glob('./datasets/JCP_mixed/*.*')
+            data_mixed = glob('./datasets/Mixed/*.*')
 
         counter = 1
         start_time = time.time()
@@ -323,7 +323,7 @@ class cyclegan(object):
 
     def save(self, checkpoint_dir, step):
         model_name = "cyclegan.model"
-        model_dir = "{}2{}_{}_{}_{}".format(self.dataset_A_dir, self.dataset_B_dir, self.now_datetime, self.model,
+        model_dir = "{}2{}_{}_{}".format(self.dataset_A_dir, self.dataset_B_dir, self.model,
                                             self.sigma_d)
         # model_dir = "{}2{}_{}_{}_{}".format(self.dataset_A_dir, self.dataset_B_dir, '2018-06-14', self.model,
         #                                     self.sigma_d)
@@ -337,7 +337,7 @@ class cyclegan(object):
     def load(self, checkpoint_dir):
         print(" [*] Reading checkpoint...")
 
-        model_dir = "{}2{}_2021-05-28_{}_{}".format(self.dataset_A_dir, self.dataset_B_dir, self.model,
+        model_dir = "{}2{}_{}_{}".format(self.dataset_A_dir, self.dataset_B_dir, self.model,
                                             self.sigma_d)
         # model_dir = "{}2{}_{}_{}_{}".format(self.dataset_A_dir, self.dataset_B_dir, '2018-06-14', self.model,
         #                                     self.sigma_d)
@@ -410,7 +410,7 @@ class cyclegan(object):
 
         test_dir_mid = os.path.join(args.test_dir, '{}2{}_{}_{}_{}/{}/mid'.format(self.dataset_A_dir,
                                                                                   self.dataset_B_dir,
-                                                                                  self.now_datetime,
+                                                                                  self.now_datetime,   
                                                                                   self.model,
                                                                                   self.sigma_d,
                                                                                   args.which_direction))

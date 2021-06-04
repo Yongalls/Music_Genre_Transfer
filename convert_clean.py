@@ -8,9 +8,11 @@ from pypianoroll import Multitrack, Track
 import pretty_midi
 import shutil
 
-ROOT_PATH = './MIDI/'
-data_path = os.path.join(ROOT_PATH, 'data')
-converted_path = os.path.join(ROOT_PATH, 'converted')
+# change data_path & converted_path
+
+ROOT_PATH = '.'
+data_path = os.path.join(ROOT_PATH, 'MIDI/datasets/BD_D/test')
+converted_path = os.path.join(ROOT_PATH, 'datasets/BD_D/test')
 LAST_BAR_MODE = 'remove'
 
 
@@ -88,13 +90,11 @@ def get_merged(multitrack, midi_name):
             category_list['Piano'].append(idx)
 
     merged = multitrack[category_list['Piano']].get_merged_pianoroll()
-    print("merged: ", merged.shape)
     pr = get_bar_piano_roll(merged)
     pr_clip = pr[:, :, 24:108]
     if int(pr_clip.shape[0] % 4) != 0:
         pr_clip = np.delete(pr_clip, np.s_[-int(pr_clip.shape[0] % 4):], axis=0)
     pr_re = pr_clip.reshape(-1, 64, 84, 1)
-    print("changed: ", pr_re.shape)
     return pr_re
 
 def get_bar_piano_roll(piano_roll):
@@ -110,16 +110,18 @@ def get_bar_piano_roll(piano_roll):
 def converter(filepath):
     """Save a multi-track piano-roll converted from a MIDI file to target
     dataset directory and update MIDI information to `midi_dict`"""
-    midi_name = os.path.splitext(os.path.basename(filepath))[0]
-    multitrack = Multitrack(beat_resolution=4, name=midi_name)
-    pm = pretty_midi.PrettyMIDI(filepath)
-    midi_info = get_midi_info(pm)
-    if midi_filter(midi_info, midi_name):
+    try:
+        midi_name = os.path.splitext(os.path.basename(filepath))[0]
+        multitrack = Multitrack(beat_resolution=4, name=midi_name)
+        pm = pretty_midi.PrettyMIDI(filepath)
+        midi_info = get_midi_info(pm)
         multitrack.parse_pretty_midi(pm)
         merged = get_merged(multitrack, midi_name)
+        print(midi_name, " merged: ", merged.shape)
         return merged
-    else:
-        return None
+    except:
+        print("\t\terror in ", midi_name)
+        return None 
 
 
 
