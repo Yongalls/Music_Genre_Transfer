@@ -118,33 +118,29 @@ def converter(filepath):
         multitrack.parse_pretty_midi(pm)
         merged = get_merged(multitrack, midi_name)
         print(midi_name, " merged: ", merged.shape)
-        return merged
+        return merged, midi_name
     except:
         print("\t\terror in ", midi_name)
-        return None 
+        return None, midi_name
 
 
 
 def main():
     """Main function of the converter"""
     midi_paths = get_midi_path(data_path)
-    npys = [converter(midi_path) for midi_path in midi_paths]
-    count = 0
-    converted_list = []
-    for npy in npys:
-        if npy is not None:
-            count += 1
-            converted_list.append(npy)
-    
-    total_npy = np.concatenate(converted_list, axis=0)
-    print("total npy: ", total_npy.shape)
-
+    npy_count = 0
+    midi_count = 0
     make_sure_path_exists(converted_path)
-    print("num of npy: ", total_npy.shape[0])
-    for i in range(total_npy.shape[0]):
-        np.save(os.path.join(converted_path, 'kpop_{}.npy'.format(i+1)), total_npy[i])
-
-    print("[Done] {} files out of {} have been successfully cleaned".format(count, len(npys)))
+    for midi_path in midi_paths:
+        npy, midi_name = converter(midi_path)
+        if npy is not None:
+            npy_count += npy.shape[0]
+            midi_count += 1
+            for i in range(npy.shape[0]):
+                np.save(os.path.join(converted_path, '{}_{}.npy'.format(midi_name, i+1)), npy[i])
+    
+    print("[Done] {} files out of {} have been successfully converted".format(midi_count, len(midi_paths)))
+    print("Total {} numpy files are created".format(npy_count))
 
 
 if __name__ == "__main__":
