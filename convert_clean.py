@@ -1,4 +1,5 @@
 from __future__ import print_function
+import argparse
 import os
 import json
 import numpy as np
@@ -8,11 +9,11 @@ from pypianoroll import Multitrack, Track
 import pretty_midi
 import shutil
 
-# change data_path & converted_path
+parser = argparse.ArgumentParser(description='')
+parser.add_argument('--midi_dir', dest='data_path', default='./MIDI/datasets/BD_B/train', help='path of the midi dataset')
+parser.add_argument('--npy_dir', dest='converted_path', default='./datasets/BD_B/train', help='path you want to save converted npy files')
+args = parser.parse_args()
 
-ROOT_PATH = '.'
-data_path = os.path.join(ROOT_PATH, 'MIDI/datasets/BD_D/test')
-converted_path = os.path.join(ROOT_PATH, 'datasets/BD_D/test')
 LAST_BAR_MODE = 'remove'
 
 
@@ -127,17 +128,17 @@ def converter(filepath):
 
 def main():
     """Main function of the converter"""
-    midi_paths = get_midi_path(data_path)
+    midi_paths = get_midi_path(args.data_path)
     npy_count = 0
     midi_count = 0
-    make_sure_path_exists(converted_path)
+    make_sure_path_exists(args.converted_path)
     for midi_path in midi_paths:
         npy, midi_name = converter(midi_path)
         if npy is not None:
             npy_count += npy.shape[0]
             midi_count += 1
             for i in range(npy.shape[0]):
-                np.save(os.path.join(converted_path, '{}_{}.npy'.format(midi_name, i+1)), npy[i])
+                np.save(os.path.join(args.converted_path, '{}_{}.npy'.format(midi_name, i+1)), npy[i])
     
     print("[Done] {} files out of {} have been successfully converted".format(midi_count, len(midi_paths)))
     print("Total {} numpy files are created".format(npy_count))
