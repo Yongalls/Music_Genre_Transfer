@@ -395,6 +395,8 @@ class cyclegan(object):
         else:
             raise Exception('--which_direction must be AtoB or BtoA')
         sample_files.sort(key=lambda x: int(os.path.splitext(os.path.basename(x))[0].split('_')[-1]))
+        # All_for_You-Cool_1.npy -> key : 1
+        # maybe not needed for our code..?
 
         if self.load(args.checkpoint_dir):
             print(" [*] Load SUCCESS")
@@ -428,11 +430,15 @@ class cyclegan(object):
 
         for idx in range(len(sample_files)):
             print('Processing midi: ', sample_files[idx])
-            sample_npy = np.load(sample_files[idx]) * 1.
+
+            # modified!!
+            file_name_out = os.path.splitext(os.path.basename(sample_files[idx]))[0]
+
+            sample_npy = np.load(sample_files[idx]) * 1. # float..
             sample_npy_re = sample_npy.reshape(1, sample_npy.shape[0], sample_npy.shape[1], 1)
-            midi_path_origin = os.path.join(test_dir_mid, '{}_origin.mid'.format(idx + 1))
-            midi_path_transfer = os.path.join(test_dir_mid, '{}_transfer.mid'.format(idx + 1))
-            midi_path_cycle = os.path.join(test_dir_mid, '{}_cycle.mid'.format(idx + 1))
+            midi_path_origin = os.path.join(test_dir_mid, '{}_origin.mid'.format(file_name_out))
+            midi_path_transfer = os.path.join(test_dir_mid, '{}_transfer.mid'.format(file_name_out))
+            midi_path_cycle = os.path.join(test_dir_mid, '{}_cycle.mid'.format(file_name_out))
             origin_midi, fake_midi, fake_midi_cycle = self.sess.run([out_origin, out_var, out_var_cycle],
                                                                     feed_dict={in_var: sample_npy_re})
             save_midis(origin_midi, midi_path_origin)
@@ -448,9 +454,9 @@ class cyclegan(object):
                 os.makedirs(npy_path_transfer)
             if not os.path.exists(npy_path_cycle):
                 os.makedirs(npy_path_cycle)
-            np.save(os.path.join(npy_path_origin, '{}_origin.npy'.format(idx + 1)), origin_midi)
-            np.save(os.path.join(npy_path_transfer, '{}_transfer.npy'.format(idx + 1)), fake_midi)
-            np.save(os.path.join(npy_path_cycle, '{}_cycle.npy'.format(idx + 1)), fake_midi_cycle)
+            np.save(os.path.join(npy_path_origin, '{}_origin.npy'.format(file_name_out)), origin_midi)
+            np.save(os.path.join(npy_path_transfer, '{}_transfer.npy'.format(file_name_out)), fake_midi)
+            np.save(os.path.join(npy_path_cycle, '{}_cycle.npy'.format(file_name_out)), fake_midi_cycle)
 
     def test_famous(self, args):
         init_op = tf.global_variables_initializer()
