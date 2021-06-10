@@ -2,6 +2,8 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
+plt.rcParams.update({'font.size': 15})
+plt.rcParams["figure.figsize"] = (20, 25)
 txt_path = './analysis_result.txt'
 
 
@@ -106,7 +108,9 @@ def main():
     print(instrument)
     #not sure is this plot working...?
     plt.bar(list(instrument.keys()), instrument.values(), color='g')
-    plt.show()
+    plt.xticks(rotation=90)
+    plt.plot()
+    plt.savefig('./histogram.png')
 
 
 if __name__ == "__main__":
