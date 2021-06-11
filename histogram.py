@@ -80,10 +80,9 @@ def main():
             elif program_number//8 == 15:
                 SOUND_EFFECTS+=1
             else:
-                # non matched.. never reached?
-                print("Nothing matched!!\n")
+                raise Exception("Nothing matched!")
 
-    
+    f.close()
     #make it into dict
     instrument = {}
     instrument['Drum'] = DRUM
@@ -107,7 +106,13 @@ def main():
 
     print(instrument)
     #not sure is this plot working...?
-    plt.bar(list(instrument.keys()), instrument.values(), color='g')
+    inst_name = []
+    inst_value = []
+    for key in sorted(instrument):
+        inst_name.append(key)
+        inst_value.append(instrument[key])
+
+    plt.bar(inst_name, inst_value, color='g')
     plt.xticks(rotation=90)
     plt.plot()
     plt.savefig('./histogram.png')

@@ -7,9 +7,11 @@ import pypianoroll
 from pypianoroll import Multitrack, Track
 import pretty_midi
 import shutil
+import argparse
 
-origin_midi_path = './MIDI/data'
-
+parser = argparse.ArgumentParser(description='')
+parser.add_argument('--midi_dir', dest='origin_midi_path', default='.MIDI/data')
+args = parser.parse_args()
 
 def get_midi_path(root):
     """Return a list of paths to MIDI files in `root` (recursively)"""
@@ -31,7 +33,7 @@ def print_instruments(f, midi_paths):
         total_cnt = total_cnt+1
         try:
             midi_name = os.path.splitext(os.path.basename(midi_path))[0]
-            print("analysising midi : ", midi_name)
+            #print("analysising midi : ", midi_name)
             pm = pretty_midi.PrettyMIDI(midi_path)
             instrument_list = pm.instruments
             sucess_list.append(midi_name)
@@ -42,16 +44,17 @@ def print_instruments(f, midi_paths):
             # print(pm.instruments)
 
         except:
-            print("\t\terror in ", midi_name)
+            #print("\t\terror in ", midi_name)
             fail_list.append(midi_name)
             fail_cnt = fail_cnt+1
     return sucess_cnt, fail_cnt, total_cnt, sucess_list, fail_list
 
 
 def main():
-    midi_paths = get_midi_path(origin_midi_path)
-    f = open("analysis_result.txt", 'w')
+    midi_paths = get_midi_path(args.origin_midi_path)
+    f = open("analysis_result.txt", 'a')
     sucess_cnt, fail_cnt, total_cnt, sucess_list, fail_list = print_instruments(f, midi_paths)
+    f.close()
     print("Total : {} Sucessed : {} Failed : {}\n".format(total_cnt, sucess_cnt, fail_cnt))
     print("Failed list :\n {}\n".format(fail_list))
 
