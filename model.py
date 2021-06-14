@@ -435,7 +435,7 @@ class cyclegan(object):
             file_name_out = os.path.splitext(os.path.basename(sample_files[idx]))[0]
 
             sample_npy = np.load(sample_files[idx]) * 1. # float..
-            sample_npy_re = sample_npy.reshape(1, sample_npy.shape[0], sample_npy.shape[1], 2)
+            sample_npy_re = sample_npy.reshape(1, sample_npy.shape[0], sample_npy.shape[1], self.input_c_dim)
             midi_path_origin = os.path.join(test_dir_mid, '{}_origin.mid'.format(file_name_out))
             midi_path_transfer = os.path.join(test_dir_mid, '{}_transfer.mid'.format(file_name_out))
             midi_path_cycle = os.path.join(test_dir_mid, '{}_cycle.mid'.format(file_name_out))
@@ -457,6 +457,67 @@ class cyclegan(object):
             np.save(os.path.join(npy_path_origin, '{}_origin.npy'.format(file_name_out)), origin_midi)
             np.save(os.path.join(npy_path_transfer, '{}_transfer.npy'.format(file_name_out)), fake_midi)
             np.save(os.path.join(npy_path_cycle, '{}_cycle.npy'.format(file_name_out)), fake_midi_cycle)
+
+    def demo(self, args):
+        init_op = tf.global_variables_initializer()
+        self.sess.run(init_op)
+        sample_files = glob('./demo/input/npy/*.*')
+        print(sample_files)
+        sample_files.sort(key=lambda x: int(os.path.splitext(os.path.basename(x))[0].split('_')[-1]))
+
+        checkpoint_dir = './checkpoint/CP_P2CP_C_full_0.0'
+        ckpt = tf.train.get_checkpoint_state(checkpoint_dir)
+        if ckpt and ckpt.model_checkpoint_path:
+            ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
+            self.saver.restore(self.sess, os.path.join(checkpoint_dir, ckpt_name))
+            print(" [*] Load SUCCESS")
+        else:
+            print(" [!] Load failed...")
+            return False
+
+        if args.which_direction == 'AtoB':
+            out_origin, out_var, out_var_cycle, in_var = (self.test_A_binary, self.testB_binary, self.testA__binary,
+                                                          self.test_A)
+        else:
+            out_origin, out_var, out_var_cycle, in_var = (self.test_B_binary, self.testA_binary, self.testB__binary,
+                                                          self.test_B)
+
+        test_dir_mid = './static/output/'
+
+        if not os.path.exists(test_dir_mid):
+            os.makedirs(test_dir_mid)
+
+        origin_midi_list = []
+        fake_midi_list = []
+        cycle_midi_list = []
+
+        for idx in range(len(sample_files)):
+            print('Processing midi: ', sample_files[idx])
+
+            # modified!!
+            file_name_out = os.path.splitext(os.path.basename(sample_files[idx]))[0]
+
+            sample_npy = np.load(sample_files[idx]) * 1. # float..
+            sample_npy_re = sample_npy.reshape(1, sample_npy.shape[0], sample_npy.shape[1], 1)
+            midi_path_origin = os.path.join(test_dir_mid, 'origin.mid')
+            midi_path_transfer = os.path.join(test_dir_mid, 'transfer.mid')
+            midi_path_cycle = os.path.join(test_dir_mid, 'cycle.mid')
+            origin_midi, fake_midi, fake_midi_cycle = self.sess.run([out_origin, out_var, out_var_cycle],
+                                                                    feed_dict={in_var: sample_npy_re})
+            origin_midi_list.append(origin_midi)
+            fake_midi_list.append(fake_midi)
+            cycle_midi_list.append(fake_midi_cycle)
+
+        total_origin_midi = np.concatenate(origin_midi_list, axis=0)
+        total_fake_midi = np.concatenate(fake_midi_list, axis = 0)
+        total_cycle_midi = np.concatenate(cycle_midi_list, axis = 0)
+
+        save_midis(total_origin_midi, midi_path_origin)
+        save_midis(total_fake_midi, midi_path_transfer)
+        save_midis(total_cycle_midi, midi_path_cycle)
+
+        return True
+
 
     def test_famous(self, args):
         init_op = tf.global_variables_initializer()

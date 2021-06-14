@@ -1,0 +1,40 @@
+<html>
+
+<head>
+    <title>Music Genre Transfer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'styles.css') }}">
+    <script type='text/javascript' src='//www.midijs.net/lib/midi.js'></script>
+    <script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.21.0/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.1.1"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body >
+<h1>EE474 Term Project</h1>
+<div class="agile-its" style="background:#fff; width: 70%; height: 70%; margin: auto;">
+    <h2>Music Genre Transfer</h2>
+    <form id="upload" action="/predict" method="POST" enctype="multipart/form-data">
+        <div style="display: flex; background: #d6dbdf; width: 20%; padding: 20px; justify-content: center;">
+            <input type="file" value="Upload" name="midi_in">
+        </div>
+        <div>
+            <input type="submit" value="Prediction" style="width: 10%">
+        </div>
+        {% if status %}
+            <p>{{text}}</p>
+            <a href='#' onClick="MIDIjs.play(`{{ url_for('static', filename='output/transfer.mid') }}`);">Play result</a>
+            <a href="#" onclick="MIDIjs.stop(); message_span.innerHTML = MIDIjs.get_audio_status();">Stop Playback</a>
+            <div style="font-size: 71%;font-size: 71%">
+                MIDIjs status: <span id="MIDIjs.message" style="color: green">Initializing ...</span>
+                <div>
+                    MIDIjs audio time (s): <span id="MIDIjs.audio_time" style="color: green">-</span></div>
+            </div>
+        {% endif %}
+    </form>
+
+</div>
+</body>
+
+</html>
+
