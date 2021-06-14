@@ -81,22 +81,45 @@ def midi_filter(midi_info, midi_name):
 def get_merged(multitrack, midi_name):
     """Return a `pypianoroll.Multitrack` instance with piano-rolls merged to
     five tracks (Bass, Drums, Guitar, Piano and Strings)"""
-    category_list = {'Piano': [], 'Drums': []}
-    program_dict = {'Piano': 0, 'Drums': 0}
-
+    category_list = {'Piano': [], 'Drums': [], 'Enssemble': []}
+    program_dict = {'Piano': 0, 'Drums': 0, 'Enssemble':0}
+    flag = 0
     for idx, track in enumerate(multitrack.tracks):
         if track.is_drum:
             category_list['Drums'].append(idx)
+        elif track.program//8 == 6:
+            category_list['Enssemble'].append(idx)
+            flag = 1
         else:
             category_list['Piano'].append(idx)
-
+    #print(midi_name)
+    #print(flag)
     merged = multitrack[category_list['Piano']].get_merged_pianoroll()
+    if(flag == 1):
+        merged_enssemble = multitrack[category_list['Enssemble']].get_merged_pianoroll()
+
     pr = get_bar_piano_roll(merged)
+    if(flag == 1):
+        pr_enssemble = get_bar_piano_roll(merged_enssemble)
+
     pr_clip = pr[:, :, 24:108]
+    if(flag == 1):
+        pr_enssemble_clip = pr_enssemble[:, :, 24:108]
+
     if int(pr_clip.shape[0] % 4) != 0:
         pr_clip = np.delete(pr_clip, np.s_[-int(pr_clip.shape[0] % 4):], axis=0)
-    pr_re = pr_clip.reshape(-1, 64, 84, 1)
-    return pr_re
+    if(flag == 1):
+        if int(pr_enssemble_clip.shape[0] % 4) != 0:
+            pr_enssemble_clip = np.delete(pr_enssemble_clip, np.s_[-int(pr_enssemble_clip.shape[0] % 4):], axis=0)
+        
+    pr_re1 = pr_clip.reshape(-1, 64, 84, 1)
+    if(flag == 1):
+        pr_re2 = pr_enssemble_clip.reshape(-1, 64, 84, 1)
+    if(flag == 0):
+        pr_re2 = np.zeros_like(pr_re1)
+    pr_re3 = np.concatenate((pr_re1, pr_re2), axis=3)
+    #print("pr_re3 : ",pr_re3.shape)
+    return pr_re3
 
 def get_bar_piano_roll(piano_roll):
     if int(piano_roll.shape[0] % 64) is not 0:
