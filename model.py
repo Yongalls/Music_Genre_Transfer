@@ -435,7 +435,7 @@ class cyclegan(object):
             file_name_out = os.path.splitext(os.path.basename(sample_files[idx]))[0]
 
             sample_npy = np.load(sample_files[idx]) * 1. # float..
-            sample_npy_re = sample_npy.reshape(1, sample_npy.shape[0], sample_npy.shape[1], 1)
+            sample_npy_re = sample_npy.reshape(1, sample_npy.shape[0], sample_npy.shape[1], 2)
             midi_path_origin = os.path.join(test_dir_mid, '{}_origin.mid'.format(file_name_out))
             midi_path_transfer = os.path.join(test_dir_mid, '{}_transfer.mid'.format(file_name_out))
             midi_path_cycle = os.path.join(test_dir_mid, '{}_cycle.mid'.format(file_name_out))
