@@ -1,0 +1,5 @@
+python convert_double.py --midi_dir='./MIDI/datasets/BD_B/train' --npy_dir='./datasets/BD_B/train'
+python convert_double.py --midi_dir='./MIDI/datasets/BD_B/test' --npy_dir='./datasets/BD_B/test'
+python convert_double.py --midi_dir='./MIDI/datasets/BD_D/train' --npy_dir='./datasets/BD_D/train'
+python convert_double.py --midi_dir='./MIDI/datasets/BD_D/test' --npy_dir='./datasets/BD_D/test'
+python convert_double.py --midi_dir='./MIDI/datasets/Mixed' --npy_dir='./datasets/Mixed'

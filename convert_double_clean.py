@@ -10,8 +10,9 @@ import pretty_midi
 import shutil
 
 parser = argparse.ArgumentParser(description='')
-parser.add_argument('--midi_dir', dest='data_path', default='./MIDI/datasets/BD_B/train', help='path of the midi dataset')
-parser.add_argument('--npy_dir', dest='converted_path', default='./datasets/BD_B/train', help='path you want to save converted npy files')
+# may be not need
+parser.add_argument('--midi_dir', dest='data_path', default='./pretrain_data', help='path of the midi dataset')
+parser.add_argument('--npy_dir', dest='converted_path', default='./pretrain_data_npy', help='path you want to save converted npy files')
 args = parser.parse_args()
 
 LAST_BAR_MODE = 'remove'
@@ -129,7 +130,7 @@ def get_bar_piano_roll(piano_roll):
             piano_roll = np.delete(piano_roll,  np.s_[-int(piano_roll.shape[0] % 64):], axis=0)
     piano_roll = piano_roll.reshape(-1, 64, 128)
     return piano_roll
-    
+
 
 def converter(filepath):
     """Save a multi-track piano-roll converted from a MIDI file to target
@@ -139,10 +140,13 @@ def converter(filepath):
         multitrack = Multitrack(beat_resolution=4, name=midi_name)
         pm = pretty_midi.PrettyMIDI(filepath)
         midi_info = get_midi_info(pm)
-        multitrack.parse_pretty_midi(pm)
-        merged = get_merged(multitrack, midi_name)
-        print(midi_name, " merged: ", merged.shape)
-        return merged, midi_name
+        if(midi_filter(midi_info, midi_name)):
+            multitrack.parse_pretty_midi(pm)
+            merged = get_merged(multitrack, midi_name)
+            print(midi_name, " merged: ", merged.shape)
+            return merged, midi_name
+        else:
+            return None, midi_name
     except:
         print("\t\terror in ", midi_name)
         return None, midi_name
