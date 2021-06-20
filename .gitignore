@@ -1,6 +1,8 @@
 datasets/
 __pycache__/
-checkpoint/
 logs/
 samples/
 test/
+checkpoint.tar.gz
+pretrain_data_npy/
+checkpoint/*

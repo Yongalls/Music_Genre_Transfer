@@ -8,7 +8,7 @@ pip install -r requirements_converter.txt
 bash make_dataset.sh
 ```
 
-### Train & Test
+### Train & Test (only piano)
 - Set up environment
 ```
 conda create -n {env_dl_name} -y python=3.5.4
@@ -16,13 +16,27 @@ source activate {env_dl_name}
 pip install -r requirements.txt
 ```
 
+- Download checkpoint file
+```
+gdown https://drive.google.com/uc?id=1dgbup3s6DfoZxREoZl8TmRTs9Djl_bZe
+tar -zxvf checkpoint.tar.gz
+```
+
 - Train
 ```
-python main.py --dataset_A_dir='BD_B' --dataset_B_dir='BD_D' --type='cyclegan' --model='full' --sigma_d=0 --phase='train'
+python main.py --dataset_A_dir='BD_B' --dataset_B_dir='BD_D' --type='cyclegan' --model='full' --sigma_d=0 --phase='train' --epoch=20 --continue_train=True
 ```
 
 - Test
 ```
 python main.py --dataset_A_dir='BD_B' --dataset_B_dir='BD_D' --type='cyclegan' --model='full' --sigma_d=0 --phase='test' --which_direction='AtoB'
 python main.py --dataset_A_dir='BD_B' --dataset_B_dir='BD_D' --type='cyclegan' --model='full' --sigma_d=0 --phase='test' --which_direction='BtoA'
+```
+
+### Train & Test (piano & enssemble)
+## Start with clean state
+- Make pretrain dataset
+```
+rm -rf datasets
+bash make_pretrain_dataset.sh
 ```
