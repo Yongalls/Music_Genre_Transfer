@@ -34,9 +34,15 @@ python main.py --dataset_A_dir='BD_B' --dataset_B_dir='BD_D' --type='cyclegan' -
 ```
 
 ### Train & Test (piano & enssemble)
-## Start with clean state
+#### Start with clean state
 - Make pretrain dataset
 ```
 rm -rf datasets
 bash make_pretrain_dataset.sh
+```
+
+- Start pretrain
+```
+patch -p0 < utils_patch.patch
+python main.py --dataset_A_dir='classic' --dataset_B_dir='pop' --type='cyclegan' --model='full' --sigma_d=0 --phase='train' --input_nc=2 --output_nc=2 --epoch=10
 ```
