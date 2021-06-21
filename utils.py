@@ -98,8 +98,8 @@ def load_midi_data(midi_path):
 def load_npy_data(npy_data):
     npy_A = np.load(npy_data[0]) * 1.
     npy_B = np.load(npy_data[1]) * 1.
-    npy_AB = np.concatenate((npy_A.reshape(npy_A.shape[0], npy_A.shape[1], 2),
-                             npy_B.reshape(npy_B.shape[0], npy_B.shape[1], 2)), axis=2)
+    npy_AB = np.concatenate((npy_A.reshape(npy_A.shape[0], npy_A.shape[1], 1),
+                             npy_B.reshape(npy_B.shape[0], npy_B.shape[1], 1)), axis=2)
     return npy_AB
 # -----------------------------
 
@@ -178,7 +178,7 @@ def save_midis(bars, file_path, tempo=80.0):
                                                                                  images_with_pause.shape[2]))
     # write_midi.write_piano_rolls_to_midi(images_with_pause_list, program_nums=[33, 0, 25, 49, 0],
     #                                      is_drum=[False, True, False, False, False], filename=file_path, tempo=80.0)
-    write_midi.write_piano_rolls_to_midi(images_with_pause_list, program_nums=[0, 48], is_drum=[False, False], filename=file_path,
+    write_midi.write_piano_rolls_to_midi(images_with_pause_list, program_nums=[0], is_drum=[False], filename=file_path,
                                          tempo=tempo, beat_resolution=4)
 
 
