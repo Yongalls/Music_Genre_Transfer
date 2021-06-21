@@ -75,3 +75,11 @@ python main.py --dataset_A_dir='BD_B' --dataset_B_dir='BD_D' --type='cyclegan' -
 python main.py --dataset_A_dir='BD_B' --dataset_B_dir='BD_D' --type='cyclegan' --model='full' --sigma_d=0 --phase='test' --which_direction='AtoB' --input_nc=2 --output_nc=2
 python main.py --dataset_A_dir='BD_B' --dataset_B_dir='BD_D' --type='cyclegan' --model='full' --sigma_d=0 --phase='test' --which_direction='BtoA' --input_nc=2 --output_nc=2
 ```
+
+### Demo
+```
+source activate {env_converter_name}
+gdown https://drive.google.com/uc?id=1i_0AFIxCT-tOl8eauVt_mwiFwJK43xmz
+tar -zxvf checkpoint.tar.gz
+python demo.py
+```
