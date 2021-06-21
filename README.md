@@ -77,6 +77,7 @@ python main.py --dataset_A_dir='BD_B' --dataset_B_dir='BD_D' --type='cyclegan' -
 ```
 
 ### Demo
+#### important !! Should turn off cache of your browser
 ```
 source activate {env_converter_name}
 gdown https://drive.google.com/uc?id=1i_0AFIxCT-tOl8eauVt_mwiFwJK43xmz
