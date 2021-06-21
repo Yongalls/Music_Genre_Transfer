@@ -465,7 +465,7 @@ class cyclegan(object):
         print(sample_files)
         sample_files.sort(key=lambda x: int(os.path.splitext(os.path.basename(x))[0].split('_')[-1]))
 
-        checkpoint_dir = './checkpoint/CP_P2CP_C_full_0.0'
+        checkpoint_dir = './checkpoint/BD_B2BD_D_full_0.0'
         ckpt = tf.train.get_checkpoint_state(checkpoint_dir)
         if ckpt and ckpt.model_checkpoint_path:
             ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
@@ -515,9 +515,7 @@ class cyclegan(object):
         save_midis(total_origin_midi, midi_path_origin)
         save_midis(total_fake_midi, midi_path_transfer)
         save_midis(total_cycle_midi, midi_path_cycle)
-
         return True
-
 
     def test_famous(self, args):
         init_op = tf.global_variables_initializer()

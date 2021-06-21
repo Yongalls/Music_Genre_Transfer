@@ -5,6 +5,7 @@ import tensorflow as tf
 import numpy as np
 import os
 import argparse
+import time
 
 tf.set_random_seed(19)
 os.environ["CUDA_VISIBLE_DEVICES"] = '1'
@@ -89,7 +90,7 @@ def make_prediction():
         if out == False:
             return render_template('index.html', status=False, text="Load checkpoint failed")
         else:
-            return render_template('index.html', status=True, text="Succesfully converted")
+            return render_template('index.html', status=True, text="Succesfully converted", file=out)
 
 
 if __name__ == '__main__':
