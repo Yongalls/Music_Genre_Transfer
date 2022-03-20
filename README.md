@@ -84,3 +84,5 @@ gdown https://drive.google.com/uc?id=1i_0AFIxCT-tOl8eauVt_mwiFwJK43xmz
 tar -zxvf checkpoint.tar.gz
 python demo.py
 ```
+Demo video
+https://drive.google.com/file/d/1n0j9QHHsXLae96PVtpYj5Wg_yeY2bOMY/view?usp=sharing
